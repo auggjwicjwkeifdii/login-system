@@ -6,7 +6,12 @@ __pycache__/
 *.pyc
 
 # Database file
-instance/database.db
+instance/
+database.db
+users.json
 
 # VS Code
 .vscode/
+
+# Virtual environment
+.venv/
