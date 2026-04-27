@@ -1,0 +1,102 @@
+/* 基本的なスタイル */
+body {
+    font-family: sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* 上揃えに変更 */
+    min-height: 100vh;
+}
+
+.container {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 800px;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #333;
+}
+
+/* テーブルのスタイル */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+thead {
+    background-color: #f2f2f2;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+    vertical-align: middle; /* セル内の垂直中央揃え */
+}
+
+/* アクションセルのコンテナ */
+.action-cell {
+    display: flex;
+    gap: 10px; /* 要素間のスペース */
+    align-items: center; /* 要素を垂直方向に中央揃え */
+}
+
+input[type="text"], select, button {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+input[type="text"] {
+    width: 120px; /* ユーザー名入力欄の幅を調整 */
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    color: white;
+    white-space: nowrap; /* ボタンテキストの改行を防ぐ */
+}
+
+.update-btn {
+    background-color: #007bff;
+}
+.update-btn:hover {
+    background-color: #0056b3;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+}
+.delete-btn:hover {
+    background-color: #c82333;
+}
+
+/* メッセージエリアのスタイル */
+#message-area {
+    min-height: 20px; /* メッセージがないときも高さを確保 */
+    text-align: center;
+    font-weight: bold;
+    margin-top: 15px;
+}
+.message-success {
+    color: #28a745;
+}
+.message-error {
+    color: #dc3545;
+}
+
+#back-to-home {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+}

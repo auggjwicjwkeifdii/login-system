@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ようこそ</title>
+    <style>
+        /* --- Global Styles --- */
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; text-align: center; background-color: #f0f2f5; line-height: 1.6; color: #212529; }
+
+        /* --- Auth Page Styles (Login/Register) --- */
+        #auth-container { margin: 2% auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 400px; perspective: 1000px; }
+        #form-flipper { position: relative; transition: transform 0.6s; transform-style: preserve-3d; min-height: 420px; /* Increased height for absolute positioning */ }
+        #auth-container.flip #form-flipper { transform: rotateY(180deg); }
+        #login-form, #register-form { backface-visibility: hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding: 10px; box-sizing: border-box; }
+        #register-form { transform: rotateY(180deg); }
+        #auth-container h1 { color: #333; }
+        #auth-container input[type="text"], #auth-container input[type="password"] { 
+            width: 100%; 
+            box-sizing: border-box; 
+            padding: 10px; 
+            margin-bottom: 10px; 
+            border: 1px solid #ddd; 
+            border-radius: 4px; 
+        }
+        
+        /* Login/Register buttons positioned absolutely from the bottom */
+        #auth-container button[type="submit"] { 
+            position: absolute;
+            bottom: 60px;
+            left: 10px;
+            width: calc(100% - 20px);
+            background-color: #007bff; 
+            color: white; 
+            padding: 10px 15px; 
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 16px; 
+        }
+        #auth-container button[type="submit"]:hover { background-color: #0056b3; }
+        .message { min-height: 20px; font-weight: bold; margin-bottom: 10px; }
+        .message-success { color: #28a745; }
+        .message-error { color: #dc3545; }
+        
+        /* Toggle link positioned absolutely from the bottom */
+        .toggle-link { 
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: #007bff; 
+            cursor: pointer; 
+            display: inline-block; 
+            margin-top: 0;
+        }
+        .password-wrapper { position: relative; margin-bottom: 10px; }
+        .password-wrapper input { 
+            margin-bottom: 0; 
+            padding-right: 50px; /* Make space for the toggle button */
+        }
+        .toggle-password-btn { 
+            position: absolute; 
+            top: 18px; /* Adjusted slightly higher */
+            right: 10px;
+            transform: translateY(-50%); 
+            background: none; 
+            border: none; 
+            padding: 5px; 
+            cursor: pointer; 
+            width: auto; 
+            font-size: 12px; 
+            color: #666; 
+        }
+        .password-requirements { font-size: 0.8em; color: #666; text-align: left; margin: -5px 0 10px 5px; }
+
+        /* --- Content Page Styles (Dashboard/Admin) --- */
+        .container { max-width: 900px; margin: 20px auto; padding: 20px; background-color: #fff; border: 1px solid #dee2e6; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: left; }
+        .container h1 { font-size: 2em; color: #343a40; border-bottom: 2px solid #007bff; padding-bottom: 10px; margin-bottom: 20px; }
+        .logout-link, #back-to-home { 
+            display: table; 
+            margin-left: auto;
+            margin-right: 0;
+            margin-top: 20px; 
+            color: #007bff; 
+            text-decoration: none; 
+            cursor: pointer; 
+        }
+        .logout-link:hover, #back-to-home:hover { text-decoration: underline; }
+
+        /* --- Message Area for Content --- */
+        #message-area { min-height: 24px; text-align: center; font-weight: bold; border-radius: 5px; padding: 10px; margin: -10px 0 15px 0; display: none; }
+        #message-area.message-success { color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; display: block; }
+        #message-area.message-error { color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; display: block; }
+
+        /* --- Admin Table Styles --- */
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #f8f9fa; font-weight: bold; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        tr:hover { background-color: #e9ecef; }
+        .role-select { padding: 5px; border-radius: 4px; border: 1px solid #ccc; }
+        .delete-btn { background-color: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+        .delete-btn:hover { background-color: #c82333; }
+
+        /* --- Dashboard Job Styles --- */
+        .job-listing { border: 1px solid #e9ecef; border-radius: 5px; padding: 20px; margin-bottom: 20px; background-color: #ffffff; }
+        .job-title { font-size: 1.5em; font-weight: bold; color: #007bff; }
+        .salary { font-size: 1.2em; font-weight: bold; color: #28a745; margin: 10px 0; }
+        .apply-btn { background-color: #007bff; color: #fff; padding: 10px 15px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 10px; cursor: pointer; border: none; font-size: 1em; }
+        .apply-btn:hover:not(:disabled) { background-color: #0056b3; }
+        .apply-btn:disabled { background-color: #6c757d; cursor: not-allowed; }
+
+        /* --- Modal Styles --- */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); }
+        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 8px; animation-name: animatetop; animation-duration: 0.4s }
+        @keyframes animatetop { from {top: -300px; opacity: 0} to {top: 0; opacity: 1} }
+        .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; }
+        .close-btn:hover, .close-btn:focus { color: black; text-decoration: none; cursor: pointer; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input { width: calc(100% - 22px); padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        
+        /* --- Responsive Styles --- */
+        @media (max-width: 480px) {
+            #auth-container {
+                margin: 20px auto;
+                width: 95%;
+                padding: 15px;
+            }
+            #form-flipper { min-height: 450px; }
+            #auth-container h1 {
+                font-size: 1.8em;
+            }
+            .toggle-password-btn {
+                font-size: 14px;
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <!-- Initial content is the auth page -->
+        <div id="auth-container">
+            <div id="form-flipper">
+                <div id="login-form">
+                    <h1>ログイン</h1>
+                    <p id="login-message" class="message"></p>
+                    <form autocomplete="off">
+                        <input type="text" name="username" placeholder="ユーザーID" required>
+                        <div class="password-wrapper">
+                            <input type="password" name="password" placeholder="パスワード" required>
+                            <button type="button" class="toggle-password-btn">表示</button>
+                        </div>
+                        <button type="submit">ログイン</button>
+                    </form>
+                    <a id="show-register" class="toggle-link">アカウントをお持ちでないですか？ 新規登録</a>
+                </div>
+                <div id="register-form">
+                    <h1>新規登録</h1>
+                    <p id="register-message" class="message"></p>
+                    <form autocomplete="off">
+                        <input type="text" name="username" placeholder="ユーザーID" required>
+                         <div class="password-wrapper">
+                            <input type="password" name="password" placeholder="パスワード" required>
+                            <button type="button" class="toggle-password-btn">表示</button>
+                        </div>
+                        <p class="password-requirements">要件: 8文字以上、大文字、小文字、半角数字を含むこと。</p>
+                        <div class="password-wrapper">
+                            <input type="password" name="confirm-password" placeholder="パスワード (確認用)" required>
+                            <button type="button" class="toggle-password-btn">表示</button>
+                        </div>
+                        <button type="submit">登録</button>
+                    </form>
+                    <a id="show-login" class="toggle-link">既にアカウントをお持ちですか？ ログイン</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const container = document.getElementById('container');
+        let token = null;
+        let currentUsername = null;
+        let currentClickedButton = null;
+
+        // --- Utility Functions ---
+        function showMessage(element, message, isSuccess) {
+            if (!element) return;
+            element.textContent = message;
+            element.classList.remove('message-success', 'message-error');
+            if (message) {
+                element.classList.add(isSuccess ? 'message-success' : 'message-error');
+            }
+        }
+        
+        async function fetchApi(endpoint, options = {}) {
+            try {
+                const headers = { 'Content-Type': 'application/json', ...options.headers };
+                if (token) {
+                    headers['x-access-token'] = token;
+                }
+
+                const response = await fetch(endpoint, { ...options, headers });
+                const contentType = response.headers.get("content-type");
+
+                if (contentType && contentType.includes("application/json")) {
+                    const result = await response.json();
+                    if (!response.ok) throw new Error(result.message || `HTTP error! status: ${response.status}`);
+                    return { success: true, data: result };
+                } else {
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    return { success: true, html: await response.text() };
+                }
+            } catch (error) {
+                console.error("API Error:", error);
+                return { success: false, message: error.message };
+            }
+        }
+
+        function getMessageArea() {
+            return container.querySelector('#message-area');
+        }
+
+        // --- Core Content Loading ---
+        async function loadContent(role) {
+            if (!token) return;
+            const endpoint = role === 'admin' ? '/admin' : '/dashboard';
+            const result = await fetchApi(endpoint, { method: 'GET' });
+            if (result.success) {
+                container.innerHTML = result.html;
+                if (endpoint === '/dashboard') updateJobButtonsState();
+            } else {
+                container.innerHTML = `<div class="container"><p class="message-error">コンテンツの読み込みに失敗しました: ${result.message}</p></div>`;
+            }
+        }
+
+        function updateJobButtonsState() {
+            if (!currentUsername) return;
+            const key = 'appliedJobs_' + currentUsername;
+            const appliedJobs = JSON.parse(localStorage.getItem(key)) || [];
+            appliedJobs.forEach(jobId => {
+                const button = container.querySelector(`.apply-btn[data-job-id="${jobId}"]`);
+                if (button) {
+                    button.textContent = '応募済み';
+                    button.disabled = true;
+                }
+            });
+        }
+
+        // --- Dashboard & Modal Functions ---
+        function openApplyModal(target) {
+            const modal = container.querySelector('#applyModal');
+            if (!modal) return;
+            currentClickedButton = target;
+            const jobTitle = target.closest('.job-listing').querySelector('.job-title').textContent;
+            modal.querySelector('#modal-title').textContent = `応募: ${jobTitle}`;
+
+            const savedUserInfo = localStorage.getItem('userInfo_' + currentUsername);
+            if (savedUserInfo) {
+                const userInfo = JSON.parse(savedUserInfo);
+                const form = modal.querySelector('form');
+                for (const key in userInfo) {
+                    if (form.elements[key]) form.elements[key].value = userInfo[key];
+                }
+            }
+            modal.style.display = 'block';
+        }
+
+        function closeApplyModal() {
+            const modal = container.querySelector('#applyModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        async function handleApply(e) {
+            e.preventDefault();
+            if (!currentClickedButton || !currentUsername) return;
+            const form = e.target;
+            const userInfo = Object.fromEntries(new FormData(form).entries());
+            localStorage.setItem('userInfo_' + currentUsername, JSON.stringify(userInfo));
+
+            const jobId = currentClickedButton.getAttribute('data-job-id');
+            const key = 'appliedJobs_' + currentUsername;
+            let appliedJobs = JSON.parse(localStorage.getItem(key)) || [];
+            if (!appliedJobs.includes(jobId)) appliedJobs.push(jobId);
+            localStorage.setItem(key, JSON.stringify(appliedJobs));
+
+            currentClickedButton.textContent = '応募済み';
+            currentClickedButton.disabled = true;
+            closeApplyModal();
+            showMessage(getMessageArea(), '応募が正常に完了しました。', true);
+        }
+
+        // --- Admin Functions ---
+        async function handleRoleChange(event) {
+            const select = event.target;
+            const newRole = select.value;
+            const username = select.closest('tr').dataset.username;
+            const result = await fetchApi('/update_role', { method: 'POST', body: JSON.stringify({ username, role: newRole }) });
+            
+            showMessage(getMessageArea(), result.message, result.success);
+            if (!result.success) {
+                select.value = newRole === 'admin' ? 'viewer' : 'admin';
+            }
+        }
+
+        async function handleDeleteUser(event) {
+            const button = event.target;
+            const row = button.closest('tr');
+            const username = row.dataset.username;
+            if (!username) {
+                showMessage(getMessageArea(), "エラー：ユーザー名を取得できませんでした。", false);
+                return;
+            }
+
+            if (!confirm(`${username}を本当に削除しますか？`)) return;
+
+            const result = await fetchApi('/delete_user', { method: 'POST', body: JSON.stringify({ username }) });
+            
+            showMessage(getMessageArea(), result.message, result.success);
+
+            if (result.success) {
+                row.style.transition = 'opacity 0.5s ease';
+                row.style.opacity = '0';
+                setTimeout(() => row.remove(), 500);
+            }
+        }
+
+        // --- Auth Functions ---
+        async function handleLogin(e) {
+            e.preventDefault();
+            const form = e.target.closest('form');
+            const username = form.querySelector('[name="username"]').value;
+            const password = form.querySelector('[name="password"]').value;
+            const messageEl = document.getElementById('login-message');
+            if (!username || !password) {
+                showMessage(messageEl, 'IDとパスワードを入力してください。', false); return;
+            }
+            currentUsername = username;
+            const result = await fetchApi('/login', { method: 'POST', body: JSON.stringify({ username, password }) });
+
+            if (result.success) {
+                token = result.data.token;
+                loadContent(result.data.role);
+            } else {
+                showMessage(messageEl, result.message, false);
+            }
+        }
+
+        async function handleRegister(e) {
+            e.preventDefault();
+            const form = e.target.closest('form');
+            const username = form.querySelector('[name="username"]').value;
+            const password = form.querySelector('[name="password"]').value;
+            const confirmPassword = form.querySelector('[name="confirm-password"]').value;
+            const messageEl = document.getElementById('register-message');
+            
+            if (password !== confirmPassword) {
+                showMessage(messageEl, 'パスワードが一致しません。', false); return;
+            }
+            const result = await fetchApi('/register', { method: 'POST', body: JSON.stringify({ username, password }) });
+            
+            if (result.success) {
+                showMessage(document.getElementById('login-message'), '登録完了！ログインしてください。', true);
+                document.getElementById('auth-container').classList.remove('flip');
+            } else {
+                showMessage(messageEl, result.message, false);
+            }
+        }
+        
+        function handleLogout() {
+            token = null;
+            currentUsername = null;
+            window.location.reload();
+        }
+
+        // --- Main Event Delegation ---
+        container.addEventListener('click', (event) => {
+            const target = event.target;
+            const authContainer = document.getElementById('auth-container');
+            
+            if (target.id === 'show-register' && authContainer) authContainer.classList.add('flip');
+            if (target.id === 'show-login' && authContainer) authContainer.classList.remove('flip');
+
+            if (target.matches('.toggle-password-btn')) {
+                const wrapper = target.closest('.password-wrapper');
+                const passInput = wrapper.querySelector('input');
+                if (passInput) {
+                    passInput.type = passInput.type === 'password' ? 'text' : 'password';
+                    target.textContent = passInput.type === 'password' ? '表示' : '非表示';
+                }
+            }
+
+            if (target.matches('#logout-link, #back-to-home')) { event.preventDefault(); handleLogout(); }
+            if (target.matches('.job-listing .apply-btn:not(:disabled)')) { openApplyModal(target); }
+            if (target.matches('.close-btn') || (target.matches('.modal') && event.target === container.querySelector('#applyModal'))) { closeApplyModal(); }
+            if (target.matches('.delete-btn')) { handleDeleteUser(event); }
+        });
+
+        container.addEventListener('change', (event) => {
+            if (event.target.matches('.role-select')) { handleRoleChange(event); }
+        });
+
+        container.addEventListener('submit', (event) => {
+            const form = event.target;
+            if (form.parentElement.id === 'login-form') handleLogin(event);
+            if (form.parentElement.id === 'register-form') handleRegister(event);
+            if (form.id === 'personal-info-form') handleApply(event);
+        });
+    </script>
+</body>
+</html>

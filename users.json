@@ -1,0 +1,25 @@
+{
+    "admin": {
+        "password": "scrypt:32768:8:1$O2J3z8sd9QacFPBx$03f24818c4c642da3939121974d542c7b976e2bdab57f78783fdc4123bdded75d1ebbd82e97526b0e208f81f8481bd1ed8e15259415670eb07b8d0b0699ba7b0",
+        "role": "admin",
+        "email": null,
+        "mfa_code": null,
+        "mfa_code_expires": null
+    },
+    "user": {
+        "password": "scrypt:32768:8:1$0AndOxAf5QQUv6gP$ba5eeb53248eb61eb30a7a6ca53d7e6994daae1e9b02e14439d291fc1a84cb071a57f0f2b77648355db7a7ac113f88575c66e2f7ed0b6375ed4e2ae35f2f946a",
+        "role": "viewer"
+    },
+    "test": {
+        "password": "scrypt:32768:8:1$TSuwlRbnLiwRrc2B$ddf54673efdec81ad26fac425d040e29fbf218648919ac43835891db3346297473fd5fc2451c7a8b3c613ad03b3bf46b09cb33c7a80adbd4e6e6daaa3bdc3704",
+        "role": "viewer"
+    },
+    "a": {
+        "password": "scrypt:32768:8:1$Z6XUH4AsbJy9F6WY$ad5917024d8d2ca222926b6f99b0719631e2b2fb1d5daebd35994ae770b20768f21b85b4716d13a7bfa3dc2253cfdba2321f9ddb993c434ec7c7730cc4f4d25d",
+        "role": "viewer"
+    },
+    "\uff51": {
+        "password": "scrypt:32768:8:1$1eLeyw6ypkdWvVFC$ccf6a218812dcb5cf1982e2de11b1cdfbb2735cd2d9b584f983c2ca968ba442de9be40f44fe35f61b1f229042ea6f1a683f84e8c8a31b61e107cfbd0026db86c",
+        "role": "viewer"
+    }
+}

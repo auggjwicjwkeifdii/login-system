@@ -1,0 +1,36 @@
+<h1>管理画面</h1>
+<p>ようこそ、{{ current_admin_user.user }}さん！</p>
+<div id="message-area"></div>
+
+<h2>ユーザー管理</h2>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>ユーザー名</th>
+            <th>役割</th>
+            <th>アクション</th>
+        </tr>
+    </thead>
+    <tbody id="user-list">
+        {% for user in users %}
+        <tr data-username="{{ user.username }}">
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>
+                <select class="role-select" {% if user.username == current_admin_user.user %}disabled{% endif %}>
+                    <option value="viewer" {% if user.role == 'viewer' %}selected{% endif %}>Viewer</option>
+                    <option value="admin" {% if user.role == 'admin' %}selected{% endif %}>Admin</option>
+                </select>
+            </td>
+            <td>
+                {% if user.username != current_admin_user.user %}
+                    <button class="delete-btn">削除</button>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="#" id="back-to-home">ログアウト</a>
