@@ -1,6 +1,8 @@
 Flask
 PyJWT
-Flask-Mail
 Flask-SQLAlchemy
-Flask-Limiter
+SQLAlchemy
+werkzeug
+flask-limiter
 python-dotenv
+Faker
