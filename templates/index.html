@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -10,86 +11,28 @@
 
         /* --- Auth Page Styles (Login/Register) --- */
         #auth-container { margin: 2% auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); max-width: 400px; perspective: 1000px; }
-        #form-flipper { position: relative; transition: transform 0.6s; transform-style: preserve-3d; min-height: 420px; /* Increased height for absolute positioning */ }
+        #form-flipper { position: relative; transition: transform 0.6s; transform-style: preserve-3d; min-height: 420px; }
         #auth-container.flip #form-flipper { transform: rotateY(180deg); }
         #login-form, #register-form { backface-visibility: hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; padding: 10px; box-sizing: border-box; }
         #register-form { transform: rotateY(180deg); }
         #auth-container h1 { color: #333; }
-        #auth-container input[type="text"], #auth-container input[type="password"] { 
-            width: 100%; 
-            box-sizing: border-box; 
-            padding: 10px; 
-            margin-bottom: 10px; 
-            border: 1px solid #ddd; 
-            border-radius: 4px; 
-        }
-        
-        /* Login/Register buttons positioned absolutely from the bottom */
-        #auth-container button[type="submit"] { 
-            position: absolute;
-            bottom: 60px;
-            left: 10px;
-            width: calc(100% - 20px);
-            background-color: #007bff; 
-            color: white; 
-            padding: 10px 15px; 
-            border: none; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            font-size: 16px; 
-        }
+        #auth-container input[type="text"], #auth-container input[type="password"] { width: 100%; box-sizing: border-box; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        #auth-container button[type="submit"] { position: absolute; bottom: 60px; left: 10px; width: calc(100% - 20px); background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
         #auth-container button[type="submit"]:hover { background-color: #0056b3; }
         .message { min-height: 20px; font-weight: bold; margin-bottom: 10px; }
         .message-success { color: #28a745; }
         .message-error { color: #dc3545; }
-        
-        /* Toggle link positioned absolutely from the bottom */
-        .toggle-link { 
-            position: absolute;
-            bottom: 20px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            color: #007bff; 
-            cursor: pointer; 
-            display: inline-block; 
-            margin-top: 0;
-        }
+        .toggle-link { position: absolute; bottom: 20px; left: 0; width: 100%; text-align: center; color: #007bff; cursor: pointer; display: inline-block; margin-top: 0; }
         .password-wrapper { position: relative; margin-bottom: 10px; }
-        .password-wrapper input { 
-            margin-bottom: 0; 
-            padding-right: 50px; /* Make space for the toggle button */
-        }
-        .toggle-password-btn { 
-            position: absolute; 
-            top: 18px; /* Adjusted slightly higher */
-            right: 10px;
-            transform: translateY(-50%); 
-            background: none; 
-            border: none; 
-            padding: 5px; 
-            cursor: pointer; 
-            width: auto; 
-            font-size: 12px; 
-            color: #666; 
-        }
+        .password-wrapper input { margin-bottom: 0; padding-right: 50px; }
+        .toggle-password-btn { position: absolute; top: 18px; right: 10px; transform: translateY(-50%); background: none; border: none; padding: 5px; cursor: pointer; width: auto; font-size: 12px; color: #666; }
         .password-requirements { font-size: 0.8em; color: #666; text-align: left; margin: -5px 0 10px 5px; }
 
         /* --- Content Page Styles (Dashboard/Admin) --- */
         .container { max-width: 900px; margin: 20px auto; padding: 20px; background-color: #fff; border: 1px solid #dee2e6; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: left; }
         .container h1 { font-size: 2em; color: #343a40; border-bottom: 2px solid #007bff; padding-bottom: 10px; margin-bottom: 20px; }
-        .logout-link, #back-to-home { 
-            display: table; 
-            margin-left: auto;
-            margin-right: 0;
-            margin-top: 20px; 
-            color: #007bff; 
-            text-decoration: none; 
-            cursor: pointer; 
-        }
+        .logout-link, #back-to-home { display: table; margin-left: auto; margin-right: 0; margin-top: 20px; color: #007bff; text-decoration: none; cursor: pointer; }
         .logout-link:hover, #back-to-home:hover { text-decoration: underline; }
-
-        /* --- Message Area for Content --- */
         #message-area { min-height: 24px; text-align: center; font-weight: bold; border-radius: 5px; padding: 10px; margin: -10px 0 15px 0; display: none; }
         #message-area.message-success { color: #155724; background-color: #d4edda; border: 1px solid #c3e6cb; display: block; }
         #message-area.message-error { color: #721c24; background-color: #f8d7da; border: 1px solid #f5c6cb; display: block; }
@@ -114,41 +57,24 @@
 
         /* --- Modal Styles --- */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); }
-        .modal-content { background-color: #fefefe; margin: 5% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 8px; animation-name: animatetop; animation-duration: 0.4s }
+        .modal-content { background-color: #fefefe; margin: 2% auto; padding: 20px; border: 1px solid #888; width: 80%; max-width: 600px; border-radius: 8px; animation-name: animatetop; animation-duration: 0.4s; max-height: 80vh; overflow-y: auto; }
         @keyframes animatetop { from {top: -300px; opacity: 0} to {top: 0; opacity: 1} }
         .close-btn { color: #aaa; float: right; font-size: 28px; font-weight: bold; }
         .close-btn:hover, .close-btn:focus { color: black; text-decoration: none; cursor: pointer; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
-        .form-group input { width: calc(100% - 22px); padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
-        
-        /* --- Responsive Styles --- */
-        @media (max-width: 480px) {
-            #auth-container {
-                margin: 20px auto;
-                width: 95%;
-                padding: 15px;
-            }
-            #form-flipper { min-height: 450px; }
-            #auth-container h1 {
-                font-size: 1.8em;
-            }
-            .toggle-password-btn {
-                font-size: 14px;
-                padding: 8px;
-            }
-        }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+        input[readonly] { background-color: #e9ecef; cursor: not-allowed; }
     </style>
 </head>
 <body>
     <div id="container">
-        <!-- Initial content is the auth page -->
         <div id="auth-container">
             <div id="form-flipper">
                 <div id="login-form">
                     <h1>ログイン</h1>
                     <p id="login-message" class="message"></p>
-                    <form autocomplete="off">
+                    <form>
                         <input type="text" name="username" placeholder="ユーザーID" required>
                         <div class="password-wrapper">
                             <input type="password" name="password" placeholder="パスワード" required>
@@ -161,7 +87,7 @@
                 <div id="register-form">
                     <h1>新規登録</h1>
                     <p id="register-message" class="message"></p>
-                    <form autocomplete="off">
+                    <form>
                         <input type="text" name="username" placeholder="ユーザーID" required>
                          <div class="password-wrapper">
                             <input type="password" name="password" placeholder="パスワード" required>
@@ -177,7 +103,7 @@
                     <a id="show-login" class="toggle-link">既にアカウントをお持ちですか？ ログイン</a>
                 </div>
             </div>
-            <button id="debug-leak-btn" style="margin-top: 15px; background-color: #ffc107; color: black; padding: 10px; border: none; border-radius: 4px; cursor: pointer; width: calc(100% - 20px);">Debug Leak Page</button>
+            <button id="debug-leak-btn" style="margin-top: 15px; background-color: #ffc107; color: black; padding: 10px; border: none; border-radius: 4px; cursor: pointer; width: 100%;">Debug Leak Page</button>
         </div>
     </div>
 
@@ -187,26 +113,32 @@
         let currentUsername = null;
         let currentClickedButton = null;
 
-        // --- Utility Functions ---
+        const bankBranchData = {
+            "三菱UFJ銀行": ["本店", "渋谷支店", "新宿中央支店", "横浜駅前支店", "名古屋駅前支店", "大阪営業部"],
+            "三井住友銀行": ["本店営業部", "渋谷駅前支店", "新宿西口支店", "横浜支店", "名古屋栄支店", "大阪本店営業部"],
+            "みずほ銀行": ["本店", "渋谷中央支店", "新宿西口支店", "横浜駅前支店", "名古屋駅前支店", "大阪支店"],
+            "ゆうちょ銀行": ["本店", "渋谷店", "新宿店", "横浜店", "名古屋中央店", "大阪支店"],
+            "りそな銀行": ["本店", "渋谷支店", "新宿支店", "横浜支店", "名古屋支店", "大阪営業部"],
+            "楽天銀行": ["第一営業支店", "第二営業支店", "第三営業支店", "ジャズ支店", "ロック支店", "サンバ支店"],
+            "PayPay銀行": ["ビジネス営業部", "はやぶさ支店", "ひかり支店", "つばめ支店"],
+            "ソニー銀行": ["本店営業部"],
+            "住信SBIネット銀行": ["イチゴ支店", "ブドウ支店", "ミカン支店", "レモン支店", "リンゴ支店"],
+            "auじぶん銀行": ["本店営業部"]
+        };
+
         function showMessage(element, message, isSuccess) {
             if (!element) return;
             element.textContent = message;
             element.classList.remove('message-success', 'message-error');
-            if (message) {
-                element.classList.add(isSuccess ? 'message-success' : 'message-error');
-            }
+            if (message) element.classList.add(isSuccess ? 'message-success' : 'message-error');
         }
         
         async function fetchApi(endpoint, options = {}) {
             try {
                 const headers = { 'Content-Type': 'application/json', ...options.headers };
-                if (token) {
-                    headers['x-access-token'] = token;
-                }
-
+                if (token) headers['x-access-token'] = token;
                 const response = await fetch(endpoint, { ...options, headers });
                 const contentType = response.headers.get("content-type");
-
                 if (contentType && contentType.includes("application/json")) {
                     const result = await response.json();
                     if (!response.ok) throw new Error(result.message || `HTTP error! status: ${response.status}`);
@@ -221,18 +153,18 @@
             }
         }
 
-        function getMessageArea() {
-            return container.querySelector('#message-area');
-        }
+        function getMessageArea() { return container.querySelector('#message-area'); }
 
-        // --- Core Content Loading ---
         async function loadContent(role) {
             if (!token) return;
             const endpoint = role === 'admin' ? '/admin' : '/dashboard';
             const result = await fetchApi(endpoint, { method: 'GET' });
             if (result.success) {
                 container.innerHTML = result.html;
-                if (endpoint === '/dashboard') updateJobButtonsState();
+                if (endpoint === '/dashboard') {
+                    updateJobButtonsState();
+                    setupApplyFormListeners();
+                }
             } else {
                 container.innerHTML = `<div class="container"><p class="message-error">コンテンツの読み込みに失敗しました: ${result.message}</p></div>`;
             }
@@ -251,20 +183,148 @@
             });
         }
 
-        // --- Dashboard & Modal Functions ---
+        function setupApplyFormListeners() {
+            const form = container.querySelector('#personal-info-form');
+            if (!form) return;
+
+            // --- Numeric Input Validation ---
+            ['postal-code', 'phone', 'account-number'].forEach(id => {
+                const input = form.querySelector(`#${id}`);
+                if (input) {
+                    input.addEventListener('input', (e) => {
+                        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                    });
+                }
+            });
+
+            // --- Phone Number Formatting ---
+            const phoneInput = form.querySelector('#phone');
+            if (phoneInput) {
+                phoneInput.addEventListener('blur', (e) => {
+                    let value = e.target.value.replace(/-/g, '');
+                    if (value.length === 11 && value.startsWith('0')) {
+                        e.target.value = `${value.slice(0, 3)}-${value.slice(3, 7)}-${value.slice(7)}`;
+                    } else if (value.length === 10 && value.startsWith('0')) {
+                         if (['03', '06'].includes(value.slice(0, 2))) { // Handles Tokyo and Osaka
+                            e.target.value = `${value.slice(0, 2)}-${value.slice(2, 6)}-${value.slice(6)}`;
+                        } else {
+                            e.target.value = `${value.slice(0, 3)}-${value.slice(3, 6)}-${value.slice(6)}`;
+                        }
+                    }
+                });
+                phoneInput.addEventListener('focus', (e) => {
+                     e.target.value = e.target.value.replace(/-/g, '');
+                });
+            }
+
+            // --- Postal Code API --- 
+            const postalCodeInput = form.querySelector('#postal-code');
+            const addressInput = form.querySelector('#address');
+            const messageEl = form.querySelector('#postal-code-message');
+            let fetchTimeout;
+            postalCodeInput.addEventListener('input', () => {
+                clearTimeout(fetchTimeout);
+                const postalCode = postalCodeInput.value.replace(/[^0-9]/g, '');
+                if (postalCode.length === 7) {
+                    messageEl.textContent = '住所を検索中...';
+                    messageEl.style.color = '#007bff';
+                    fetchTimeout = setTimeout(() => {
+                         fetch(`https://zipcloud.ibsnet.co.jp/api/search?zipcode=${postalCode}`)
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.status === 200 && data.results) {
+                                    const result = data.results[0];
+                                    addressInput.value = result.address1 + result.address2 + result.address3;
+                                    messageEl.textContent = '住所が自動入力されました。';
+                                    messageEl.style.color = 'green';
+                                } else {
+                                    addressInput.value = ''; // Clear on failure
+                                    messageEl.textContent = '有効な郵便番号が見つかりませんでした。';
+                                    messageEl.style.color = 'red';
+                                }
+                            }).catch(() => {
+                                addressInput.value = ''; // Clear on error
+                                messageEl.textContent = '住所の検索中にエラーが発生しました。'; 
+                                messageEl.style.color = 'red'; 
+                            });
+                    }, 300);
+                } else { 
+                    addressInput.value = ''; // Clear if postal code is incomplete
+                    messageEl.textContent = '';
+                }
+            });
+
+            // --- Bank/Branch Logic --- 
+            const bankSelect = form.querySelector('#bank-name');
+            const branchSelect = form.querySelector('#branch-name');
+            bankSelect.addEventListener('change', () => {
+                branchSelect.innerHTML = ''; // Clear previous options
+                const selectedBank = bankSelect.value;
+                if (selectedBank && bankBranchData[selectedBank]) {
+                    branchSelect.disabled = false;
+                    let defaultOption = new Option('支店を選択してください', '');
+                    defaultOption.disabled = true;
+                    defaultOption.selected = true;
+                    branchSelect.add(defaultOption);
+
+                    bankBranchData[selectedBank].forEach(branch => {
+                        branchSelect.add(new Option(branch, branch));
+                    });
+                } else {
+                    let defaultOption = new Option('先に銀行を選択してください', '');
+                    defaultOption.disabled = true;
+                    defaultOption.selected = true;
+                    branchSelect.add(defaultOption);
+                    branchSelect.disabled = true;
+                }
+            });
+        }
+
         function openApplyModal(target) {
             const modal = container.querySelector('#applyModal');
             if (!modal) return;
             currentClickedButton = target;
-            const jobTitle = target.closest('.job-listing').querySelector('.job-title').textContent;
-            modal.querySelector('#modal-title').textContent = `応募: ${jobTitle}`;
+            modal.querySelector('#modal-title').textContent = `応募: ${target.closest('.job-listing').querySelector('.job-title').textContent}`;
+            
+            const form = modal.querySelector('#personal-info-form');
+            form.reset(); 
 
+            const branchSelect = form.querySelector('#branch-name');
+            branchSelect.innerHTML = '';
+            let defaultOption = new Option('先に銀行を選択してください', '');
+            defaultOption.disabled = true;
+            defaultOption.selected = true;
+            branchSelect.add(defaultOption);
+            branchSelect.disabled = true;
+
+            // --- Restore user info from localStorage (Site Auto-fill Feature) ---
             const savedUserInfo = localStorage.getItem('userInfo_' + currentUsername);
             if (savedUserInfo) {
                 const userInfo = JSON.parse(savedUserInfo);
-                const form = modal.querySelector('form');
+                // Exclude fields that should NOT be auto-filled, as per instruction.
+                const fieldsToExclude = ['address', 'bank-name', 'branch-name'];
+
                 for (const key in userInfo) {
-                    if (form.elements[key]) form.elements[key].value = userInfo[key];
+                    if (fieldsToExclude.includes(key)) {
+                        continue; // Skip address, bank, and branch
+                    }
+                    const element = form.elements[key];
+                    if (element) {
+                         element.value = userInfo[key];
+                    }
+                }
+                
+                // Trigger events for fields that were auto-filled to ensure dependent logic runs.
+                const postalCodeInput = form.querySelector('#postal-code');
+                if (postalCodeInput && postalCodeInput.value) {
+                    // This triggers the address API lookup.
+                    postalCodeInput.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+
+                const phoneInput = form.querySelector('#phone');
+                if (phoneInput && phoneInput.value) {
+                    // This triggers phone number formatting.
+                    phoneInput.dispatchEvent(new Event('blur'));
                 }
             }
             modal.style.display = 'block';
@@ -277,8 +337,15 @@
 
         async function handleApply(e) {
             e.preventDefault();
+            const form = e.target.closest('form');
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
             if (!currentClickedButton || !currentUsername) return;
-            const form = e.target;
+            
             const userInfo = Object.fromEntries(new FormData(form).entries());
             localStorage.setItem('userInfo_' + currentUsername, JSON.stringify(userInfo));
 
@@ -294,127 +361,93 @@
             showMessage(getMessageArea(), '応募が正常に完了しました。', true);
         }
 
-        // --- Admin Functions ---
-        async function handleRoleChange(event) {
-            const select = event.target;
-            const newRole = select.value;
-            const username = select.closest('tr').dataset.username;
-            const result = await fetchApi('/update_role', { method: 'POST', body: JSON.stringify({ username, role: newRole }) });
-            
-            showMessage(getMessageArea(), result.message, result.success);
-            if (!result.success) {
-                select.value = newRole === 'admin' ? 'viewer' : 'admin';
-            }
-        }
-
-        async function handleDeleteUser(event) {
-            const button = event.target;
-            const row = button.closest('tr');
-            const username = row.dataset.username;
-            if (!username) {
-                showMessage(getMessageArea(), "エラー：ユーザー名を取得できませんでした。", false);
-                return;
-            }
-
-            if (!confirm(`${username}を本当に削除しますか？`)) return;
-
-            const result = await fetchApi('/delete_user', { method: 'POST', body: JSON.stringify({ username }) });
-            
-            showMessage(getMessageArea(), result.message, result.success);
-
-            if (result.success) {
-                row.style.transition = 'opacity 0.5s ease';
-                row.style.opacity = '0';
-                setTimeout(() => row.remove(), 500);
-            }
-        }
-
-        // --- Auth Functions ---
-        async function handleLogin(e) {
+        async function handleAuth(e, endpoint) {
             e.preventDefault();
             const form = e.target.closest('form');
             const username = form.querySelector('[name="username"]').value;
             const password = form.querySelector('[name="password"]').value;
-            const messageEl = document.getElementById('login-message');
+            const messageElId = endpoint === '/login' ? 'login-message' : 'register-message';
+            const messageEl = document.getElementById(messageElId);
+            
+            if (endpoint === '/register') {
+                const confirmPassword = form.querySelector('[name="confirm-password"]').value;
+                if (password !== confirmPassword) {
+                    showMessage(messageEl, 'パスワードが一致しません。', false); return;
+                }
+            }
             if (!username || !password) {
                 showMessage(messageEl, 'IDとパスワードを入力してください。', false); return;
             }
             currentUsername = username;
-            const result = await fetchApi('/login', { method: 'POST', body: JSON.stringify({ username, password }) });
+            localStorage.setItem('last_active_user', username);
+
+            const result = await fetchApi(endpoint, { method: 'POST', body: JSON.stringify({ username, password }) });
 
             if (result.success) {
-                token = result.data.token;
-                loadContent(result.data.role);
-            } else {
-                showMessage(messageEl, result.message, false);
-            }
-        }
-
-        async function handleRegister(e) {
-            e.preventDefault();
-            const form = e.target.closest('form');
-            const username = form.querySelector('[name="username"]').value;
-            const password = form.querySelector('[name="password"]').value;
-            const confirmPassword = form.querySelector('[name="confirm-password"]').value;
-            const messageEl = document.getElementById('register-message');
-            
-            if (password !== confirmPassword) {
-                showMessage(messageEl, 'パスワードが一致しません。', false); return;
-            }
-            const result = await fetchApi('/register', { method: 'POST', body: JSON.stringify({ username, password }) });
-            
-            if (result.success) {
-                showMessage(document.getElementById('login-message'), '登録完了！ログインしてください。', true);
-                document.getElementById('auth-container').classList.remove('flip');
+                if(endpoint === '/login'){
+                    token = result.data.token;
+                    loadContent(result.data.role);
+                } else {
+                    showMessage(document.getElementById('login-message'), '登録完了！ログインしてください。', true);
+                    document.getElementById('auth-container').classList.remove('flip');
+                }
             } else {
                 showMessage(messageEl, result.message, false);
             }
         }
         
         function handleLogout() {
-            token = null;
-            currentUsername = null;
+            token = null; currentUsername = null;
             window.location.reload();
         }
 
         // --- Main Event Delegation ---
-        container.addEventListener('click', (event) => {
-            const target = event.target;
+        container.addEventListener('click', (e) => {
+            const t = e.target;
             const authContainer = document.getElementById('auth-container');
-            
-            if (target.id === 'debug-leak-btn') {
-                window.location.href = '/debug/leak';
-                return;
+            if (t.id === 'debug-leak-btn') window.location.href = '/debug/leak';
+            if (t.id === 'show-register' && authContainer) authContainer.classList.add('flip');
+            if (t.id === 'show-login' && authContainer) authContainer.classList.remove('flip');
+            if (t.matches('.toggle-password-btn')) {
+                const p = t.previousElementSibling;
+                p.type = p.type === 'password' ? 'text' : 'password';
+                t.textContent = p.type === 'password' ? '表示' : '非表示';
             }
-
-            if (target.id === 'show-register' && authContainer) authContainer.classList.add('flip');
-            if (target.id === 'show-login' && authContainer) authContainer.classList.remove('flip');
-
-            if (target.matches('.toggle-password-btn')) {
-                const wrapper = target.closest('.password-wrapper');
-                const passInput = wrapper.querySelector('input');
-                if (passInput) {
-                    passInput.type = passInput.type === 'password' ? 'text' : 'password';
-                    target.textContent = passInput.type === 'password' ? '表示' : '非表示';
-                }
+            if (t.matches('#logout-link, #back-to-home')) { e.preventDefault(); handleLogout(); }
+            if (t.matches('.job-listing .apply-btn:not(:disabled)')) openApplyModal(t);
+            if (t.matches('.close-btn') || e.target.classList.contains('modal')) closeApplyModal();
+            if (t.matches('.delete-btn')) {
+                 const row = t.closest('tr');
+                 if (!confirm(`${row.dataset.username}を本当に削除しますか？`)) return;
+                 fetchApi('/delete_user', { method: 'POST', body: JSON.stringify({ username: row.dataset.username }) }).then(res => {
+                    showMessage(getMessageArea(), res.message, res.success);
+                    if (res.success) {
+                        row.style.transition = 'opacity 0.5s ease';
+                        row.style.opacity = '0';
+                        setTimeout(() => row.remove(), 500);
+                    }
+                 });
             }
-
-            if (target.matches('#logout-link, #back-to-home')) { event.preventDefault(); handleLogout(); }
-            if (target.matches('.job-listing .apply-btn:not(:disabled)')) { openApplyModal(target); }
-            if (target.matches('.close-btn') || (target.matches('.modal') && event.target === container.querySelector('#applyModal'))) { closeApplyModal(); }
-            if (target.matches('.delete-btn')) { handleDeleteUser(event); }
         });
 
-        container.addEventListener('change', (event) => {
-            if (event.target.matches('.role-select')) { handleRoleChange(event); }
+        container.addEventListener('change', (e) => {
+            if (e.target.matches('.role-select')) {
+                const select = e.target;
+                fetchApi('/update_role', { method: 'POST', body: JSON.stringify({ username: select.closest('tr').dataset.username, role: select.value }) }).then(res => {
+                    showMessage(getMessageArea(), res.message, res.success);
+                    if (!res.success) select.value = select.value === 'admin' ? 'viewer' : 'admin';
+                });
+            }
         });
 
-        container.addEventListener('submit', (event) => {
-            const form = event.target;
-            if (form.parentElement.id === 'login-form') handleLogin(event);
-            if (form.parentElement.id === 'register-form') handleRegister(event);
-            if (form.id === 'personal-info-form') handleApply(event);
+        container.addEventListener('submit', (e) => {
+            const form = e.target;
+            if (form.parentElement.id === 'login-form') handleAuth(e, '/login');
+            if (form.parentElement.id === 'register-form') handleAuth(e, '/register');
+            if (form.id === 'personal-info-form') handleApply(e);
         });
+
+        document.querySelectorAll('form').forEach(form => form.setAttribute('autocomplete', 'off'));
     </script>
 </body>
 </html>

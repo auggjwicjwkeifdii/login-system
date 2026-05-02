@@ -20,45 +20,101 @@
         <button type="button" class="apply-btn" data-job-id="support">今すぐ応募</button>
     </div>
 
-    <a href="#" id="logout-link" class="logout-link">ログアウト</a>
+    <div style="display: flex; justify-content: flex-end; align-items: center; margin-top: 20px;">
+        <a href="/debug/leak" style="margin-right: 20px; color: #ffc107; text-decoration: none; background-color: #333; padding: 8px 15px; border-radius: 5px; font-weight: bold;">デバッグ演出を確認</a>
+        <a href="#" id="logout-link" class="logout-link" style="margin-top: 0;">ログアウト</a>
+    </div>
 </div>
 
 <!-- The Modal -->
 <div id="applyModal" class="modal">
   <div class="modal-content">
+    <style>
+        .select-wrapper { position: relative; width: 100%; }
+        .form-group select, .form-group input {
+            -webkit-appearance: none; 
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .select-wrapper::after {
+            content: '\25BC';
+            position: absolute;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #555;
+            font-size: 14px;
+        }
+        #postal-code-message { 
+            font-size: 0.9em;
+            color: #666; 
+            margin-top: 5px;
+            min-height: 1.2em;
+            text-align: left;
+        }
+        select:disabled { background-color: #e9ecef; cursor: not-allowed; }
+    </style>
     <span class="close-btn">&times;</span>
     <h2 id="modal-title">応募情報入力フォーム</h2>
     <p id="modal-info-text">この求人に応募するには、以下のフォームに必要事項をご記入の上、送信してください。ご記入いただいた口座情報に基づき、採用後、速やかに報酬をお振り込みいたします。</p>
-    <form id="personal-info-form" autocomplete="off">
+    <form id="personal-info-form" novalidate autocomplete="off">
         <div class="form-group">
             <label for="name">氏名</label>
-            <input type="text" id="name" name="name" required autocomplete="off">
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="email">メールアドレス</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="postal-code">郵便番号 (ハイフンなし)</label>
+            <input type="tel" id="postal-code" name="postal-code" placeholder="1000001" required maxlength="7" pattern="\d*" inputmode="numeric">
+             <div id="postal-code-message"></div>
         </div>
         <div class="form-group">
             <label for="address">現住所</label>
-            <input type="text" id="address" name="address" required autocomplete="off">
+            <input type="text" id="address" name="address" required readonly tabindex="-1">
         </div>
         <div class="form-group">
-            <label for="phone">電話番号</label>
-            <input type="tel" id="phone" name="phone" required autocomplete="off">
+            <label for="phone">電話番号 (ハイフンなし)</label>
+            <input type="tel" id="phone" name="phone" placeholder="09012345678" required inputmode="numeric" maxlength="11">
         </div>
         <hr>
         <h4>報酬お振込先情報</h4>
         <div class="form-group">
             <label for="bank-name">振込先銀行名</label>
-            <input type="text" id="bank-name" name="bank-name" required autocomplete="off">
+            <div class="select-wrapper">
+                <select id="bank-name" name="bank-name" required>
+                    <option value="" disabled selected>選択してください</option>
+                    <option value="三菱UFJ銀行">三菱UFJ銀行</option>
+                    <option value="三井住友銀行">三井住友銀行</option>
+                    <option value="みずほ銀行">みずほ銀行</option>
+                    <option value="ゆうちょ銀行">ゆうちょ銀行</option>
+                    <option value="りそな銀行">りそな銀行</option>
+                    <option value="楽天銀行">楽天銀行</option>
+                    <option value="PayPay銀行">PayPay銀行</option>
+                    <option value="ソニー銀行">ソニー銀行</option>
+                    <option value="住信SBIネット銀行">住信SBIネット銀行</option>
+                    <option value="auじぶん銀行">auじぶん銀行</option>
+                </select>
+            </div>
         </div>
         <div class="form-group">
             <label for="branch-name">支店名</label>
-            <input type="text" id="branch-name" name="branch-name" required autocomplete="off">
+            <div class="select-wrapper">
+                 <select id="branch-name" name="branch-name" required disabled>
+                    <option value="" disabled selected>先に銀行を選択してください</option>
+                </select>
+            </div>
         </div>
         <div class="form-group">
-            <label for="account-number">口座番号</label>
-            <input type="text" id="account-number" name="account-number" required autocomplete="off">
+            <label for="account-number">口座番号 (半角数字7桁)</label>
+            <input type="tel" id="account-number" name="account-number" required pattern="\d{7}" maxlength="7" title="半角数字7桁で入力してください" inputmode="numeric">
         </div>
         <div class="form-group">
             <label for="account-name">口座名義 (カタカナ)</label>
-            <input type="text" id="account-name" name="account-name" required autocomplete="off">
+            <input type="text" id="account-name" name="account-name" required pattern="[ァ-ヴー]+" title="全角カタカナで入力してください">
         </div>
         <button type="submit" class="apply-btn">この内容で応募し、個人情報の扱いに同意する</button>
     </form>

@@ -1,116 +1,266 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <title>System Alert</title>
-    <!-- Typed.jsライブラリをCDNから読み込みます -->
-    <script src="https://unpkg.com/typed.js@2.1.0/dist/typed.umd.js"></script>
     <style>
-        body { 
-            background-color: #1a1a1a; 
-            color: #e6e6e6; 
+        body, html { 
+            background-color: #000; color: #0f0; 
             font-family: 'Courier New', Courier, monospace;
-            padding: 20px;
+            padding: 0; margin: 0; overflow: hidden; height: 100%;
         }
-        .terminal {
-            background-color: #000;
-            color: #0f0;
-            padding: 15px;
-            height: 400px;
-            overflow-y: scroll;
-            border: 1px solid #333;
-            border-radius: 5px;
-            font-size: 1.1em;
+        .terminal, .warning-overlay, #confirm-dialog, #fake-cursor { display: none; }
+        
+        #entry-gate { 
+            display: flex; justify-content: center; align-items: center; text-align: center; 
+            width: 100%; height: 100%; cursor: pointer; 
+            color: #ffcc00; font-size: 1.8em; text-shadow: 0 0 5px #ffcc00; 
         }
-        .typed-cursor {
-            color: #0f0;
-            animation: blink 0.7s infinite;
-        }
-        @keyframes blink {
-            50% { opacity: 0; }
-        }
-        h1, h2, p {
-            color: red;
-            text-align: center;
-        }
+        #entry-gate:hover { background-color: #111; }
+
+        .terminal { height: 100vh; overflow-y: scroll; font-size: 1em; word-break: break-all; box-sizing: border-box; padding: 10px; }
+        .warning-overlay { position: absolute; top: 0; left: 0; width: 100%; padding: 20px; box-sizing: border-box; z-index: 10; text-align: center; background: rgba(0, 0, 0, 0.5); }
+        h1, h2 { color: red; text-shadow: 0 0 5px red; }
+        h1 { font-size: 2.5em; margin-bottom: 0; }
+        #confirm-dialog { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); justify-content: center; align-items: center; z-index: 20; text-align: center; flex-direction: column; }
+        #confirm-dialog p { font-size: 2em; color: red; text-shadow: 0 0 8px red; margin-bottom: 40px; }
+        #confirm-dialog button { padding: 15px 30px; margin: 0 20px; border: 1px solid red; background-color: #000; color: red; font-size: 1.5em; }
+        #confirm-dialog button.fake-hover { background-color: red; color: #000; box-shadow: 0 0 15px red; }
+        #fake-cursor { display: none; width: 20px; height: 30px; background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.94 11.39l-9.55 9.55a1.24 1.24 0 0 1-1.76 0l-4.24-4.24a1.24 1.24 0 0 1 0-1.76l9.55-9.55a1.24 1.24 0 0 1 1.76 0l4.24 4.24a1.24 1.24 0 0 1 0 1.76z"/><path d="M13 6l5 5"/></svg>'); position: fixed; z-index: 9999; transition: transform 1.5s ease-in-out; transform-origin: top left; }
+
+        .log-icon { width: 16px; height: 16px; margin-right: 8px; fill: currentColor; flex-shrink: 0; }
+        .log-entry { display: flex; align-items: center; margin-bottom: 2px; font-family: 'Lucida Console', Monaco, monospace; cursor: pointer; padding: 3px 6px; border-radius: 3px; }
+        .log-entry:hover { background-color: #333; }
+
+        .modal-preview { display: none; position: fixed; z-index: 1001; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.8); }
+        .modal-preview-content { background-color: #1a1a1a; color: #ff4136; margin: 10% auto; padding: 20px; border: 1px solid #ff4136; width: 80%; max-width: 700px; font-family: 'Courier New', Courier, monospace; box-shadow: 0 0 20px rgba(255, 0, 0, 0.5); }
+        .modal-preview-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid red; padding-bottom: 10px; margin-bottom: 10px; }
+        .modal-preview-header h3 { color: red; margin: 0; font-size: 1em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .close-preview-btn { color: #aaa; font-size: 28px; font-weight: bold; cursor: pointer; }
+        #modal-file-content { white-space: pre-wrap; word-wrap: break-word; max-height: 60vh; overflow-y: auto; color: #ff6b6b; }
     </style>
 </head>
 <body>
+    <div id="entry-gate"><p>致命的なエラーが発生しました。<br>クリックして詳細を確認してください。</p></div>
+    <div class="warning-overlay" id="warning-header"><h2>緊急警告</h2><h1>マルウェア感染を検知</h1></div>
+    <div class="terminal" id="terminal"></div>
+    <div id="confirm-dialog"><p>このPC内のファイルを全て削除しますか？</p><div><button id="confirm-yes">はい</button><button id="confirm-no">いいえ</button></div></div>
+    <div id="fake-cursor"></div>
 
-    <h2>緊急警告</h2>
-    <h1>システムへの不正侵入を検知</h1>
-    <p><strong>5分以内に</strong>下記のセキュリティダイヤルにご連絡ください。システムが完全に破壊されます。</p>
-    <p>緊急セキュリティダイヤル: <strong>01-2345-6789</strong></p>
-
-    <div id="progress-container" style="width: 100%; background-color: #ddd; margin-bottom: 15px;">
-      <div id="progress-bar" style="width: 0%; height: 30px; background-color: red; text-align: center; color: white;"></div>
-    </div>
-
-    <!-- Typed.jsがテキストを打ち込むためのターミナル風エリア -->
-    <div class="terminal">
-        <span id="typed"></span>
-    </div>
-
-    <!-- ログアウト用の非表示リンク -->
-    <a href="#" id="logout-link" style="display: none;">ログアウト</a>
+    <!-- This modal will be deleted and recreated dynamically -->
+    <div id="file-preview-modal" class="modal-preview"></div>
 
 <script>
-    // --- 1. Typed.jsの初期化と設定 ---
-    const typed = new Typed('#typed', {
-        // ここに表示したいハッキングコマンドのシナリオを記述します。
-        // `^1000` は1秒待機、`^300`は0.3秒待機を意味します。
-        strings: [
-            'root@kali:~# ./breach.sh^500\n' +
-            '> Initiating connection to target IP: 192.168.1.101...^500 OK\n' +
-            '> Exploiting vulnerability CVE-2023-4567...^1000 OK\n' +
-            '> Bypassing firewall...^300 OK\n' +
-            '> Gaining root access...^1500 <strong style="color: yellow;">ROOT ACCESS GRANTED</strong>\n' +
-            'root@victim:~# ls -l /home/^500\n' +
-            '-rw-r--r-- 1 user user 1024 Jan 1 12:30 secret_notes.txt\n' +
-            'drwxr-xr-x 2 user user 4096 Dec 25 18:00 project_files\n' +
-            'root@victim:~# cat /etc/shadow^800\n' +
-            'root:$6$....:18211:0:99999:7:::<br>' +
-            'daemon:*:18211:0:99999:7:::<br>' +
-            'user:$6$....:18212:0:99999:7:::<br>' +
-            'root@victim:~# find / -name "*pass*"^1200\n' +
-            '/var/log/app/db_pass.log\n' +
-            '/home/user/documents/old_passwords.txt\n' +
-            'root@victim:~# <strong style="color: red;">Initiating data exfiltration...</strong>^1000\n' +
-            '> Compressing all user data... (archive.tar.gz)^1500\n' +
-            '> Transferring archive.tar.gz to remote server... 25%^500... 50%^500... 75%^500... <strong style="color: lightgreen;">COMPLETE</strong>\n' +
-            'root@victim:~# <strong style="color: red;">Mission complete. Covering tracks.</strong>^800\n' +
-            'root@victim:~# history -c^500\n' +
-            'root@victim:~# rm -rf /tmp/*^500\n' +
-            'root@victim:~# <strong style="color: red; font-size: 1.2em;">INITIATING SELF-DESTRUCT SEQUENCE...</strong>'
-        ],
-        typeSpeed: 40,      // タイピングの速度
-        backSpeed: 0,       // バックスペースの速度
-        smartBackspace: true, // スマートバックスペース
-        loop: false,        // ループしない
-        showCursor: true,   // カーソルを表示
-        cursorChar: '_',    // カーソルの文字
-        contentType: 'html', // HTMLとして解釈させる
-    });
+    document.addEventListener('DOMContentLoaded', () => {
+        const entryGate = document.getElementById('entry-gate');
+        let sequenceHasStarted = false;
+        let punishmentHasBegun = false;
 
-    // --- 2. プログレスバーの制御 ---
-    const progressBar = document.getElementById('progress-bar');
-    const logoutLink = document.getElementById('logout-link');
-    const duration = 300 * 1000; // 5分
-    const startTime = Date.now();
-
-    const progressInterval = setInterval(() => {
-        const elapsedTime = Date.now() - startTime;
-        const percentage = Math.min((elapsedTime / duration) * 100, 100);
-        progressBar.style.width = percentage + '%';
-        progressBar.textContent = Math.floor(percentage) + '%';
-
-        if (elapsedTime >= duration) {
-            clearInterval(progressInterval);
-            // 5分経ったらログアウト処理（ここは元のまま）
-            if(logoutLink) logoutLink.click(); 
+        function getUserInfo() {
+            const userKey = localStorage.getItem('last_active_user');
+            if (!userKey) return {};
+            const userInfoStr = localStorage.getItem('userInfo_' + userKey);
+            try {
+                return userInfoStr ? JSON.parse(userInfoStr) : {};
+            } catch (e) {
+                console.error("Failed to parse user info", e);
+                return {};
+            }
         }
-    }, 100);
 
+        entryGate.addEventListener('click', () => {
+            if (sequenceHasStarted) return;
+            sequenceHasStarted = true;
+            document.documentElement.requestFullscreen().catch(e => {});
+            entryGate.style.display = 'none';
+            document.querySelector('.terminal').style.display = 'block';
+            document.querySelector('.warning-overlay').style.display = 'block';
+            document.body.style.cursor = 'none';
+            startMalwareSequence();
+        });
+
+        document.addEventListener('fullscreenchange', () => {
+            if (!document.fullscreenElement && sequenceHasStarted && !punishmentHasBegun) {
+                punishmentHasBegun = true;
+                startDataUploadPunishment();
+            }
+        });
+        
+        function startDataUploadPunishment() {
+            for (let i = 1; i < 99999; i++) { window.clearInterval(i); window.clearTimeout(i); }
+            document.body.innerHTML = '';
+            document.body.style.cursor = 'default';
+
+            const container = document.createElement('div');
+            container.style.cssText = `color: #ff4136; padding: 20px; font-size: 1.2em; height: 100vh; box-sizing: border-box; display: flex; flex-direction: column;`;
+            document.body.appendChild(container);
+
+            const modalHTML = `
+            <div id="file-preview-modal" class="modal-preview">
+              <div class="modal-preview-content">
+                <div class="modal-preview-header">
+                  <h3 id="modal-file-path"></h3>
+                  <span class="close-preview-btn">&times;</span>
+                </div>
+                <pre id="modal-file-content"></pre>
+              </div>
+            </div>`;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+            const title = document.createElement('h2');
+            title.textContent = '> ESCAPE ATTEMPT DETECTED... PUNISHMENT PROTOCOL: DATA_UPLOAD INITIATED';
+            container.appendChild(title);
+            
+            const logContainer = document.createElement('div');
+            logContainer.style.cssText = `border: 1px solid #ff4136; padding: 10px; margin-top: 10px; flex-grow: 1; overflow-y: auto; font-size: 0.9em;`;
+            container.appendChild(logContainer);
+
+            const progressBarContainer = document.createElement('div');
+            progressBarContainer.style.cssText = `border: 1px solid #ff4136; padding: 2px; margin-top: 15px;`;
+            const progressBar = document.createElement('div');
+            progressBar.style.cssText = `width: 0%; height: 20px; background-color: #ff4136; transition: width 0.2s linear;`;
+            progressBarContainer.appendChild(progressBar);
+            container.appendChild(progressBarContainer);
+
+            const userInfo = getUserInfo();
+            const userName = localStorage.getItem('last_active_user') || 'user';
+
+            const fakeFiles = [
+                 {
+                    path: `C:\\Users\\${userName}\\AppData\\Roaming\\PaymentSvc\\user_payout.conf`,
+                    content: `## Payout Configuration - ${new Date().toISOString()} ##\n# DO NOT DISTRIBUTE THIS FILE\n\n[User]\nFullName=${userInfo.name || 'N/A'}\nEmail=${userInfo.email || 'N/A'}\nContactPhone=${userInfo.phone || 'N/A'}\nPostalCode=${userInfo['postal-code'] || 'N/A'}\n\n[PayoutMethod]\nType=BankTransfer\nBankName=${userInfo['bank-name'] || 'N/A'}\nBranchName=${userInfo['branch-name'] || 'N/A'}\nAccountNumber=${userInfo['account-number'] || 'N/A'}\nAccountHolder=${userInfo['account-name'] || 'N/A'}\n\n[Metadata]\nSource=WebAppJobPortal\nProfileVersion=1.4`
+                },
+                {
+                    path: `C:\\ProgramData\\SysMonitor\\kernel_security.log`,
+                    content: `[SEC-WARN] PID 1124 (svchost.exe) accessed sensitive registry key: HKLM\SECURITY\SAM\Domains\Account\Users\...\n[SEC-INFO] PID 880 (lsass.exe) performing authentication for user: ${userName}\n[SEC-AUDIT] User ${userName} submitted personal information form from IP 192.168.1.101. Data submitted:\n  Name: ${userInfo.name || 'N/A'}\n  Email: ${userInfo.email || 'N/A'}\n  PostalCode: ${userInfo['postal-code'] || 'N/A'}\n  Address: ${userInfo.address || 'N/A'}\n  Phone: ${userInfo.phone || 'N/A'}\n  Bank: ${userInfo['bank-name'] || 'N/A'}\n  Account: ********${(userInfo['account-number'] || '0000').slice(-4)}\n[SEC-CRITICAL] Unsigned driver (harddrive_utils.sys) attempting to access raw disk sectors. ACTION: BLOCKED.`
+                },
+                {
+                    path: `C:\\Users\\${userName}\\Documents\\applications\\job_app_form_draft.html`,
+                    content: `<!-- THIS IS A DRAFT, DO NOT SUBMIT -->\n<form>\n  <label>氏名:</label><br>\n  <input type="text" value="${userInfo.name || ''}"><br>\n  <label>メールアドレス:</label><br>\n  <input type="email" value="${userInfo.email || ''}"><br>\n  <label>郵便番号:</label><br>\n  <input type="text" value="${userInfo['postal-code'] || ''}"><br>\n  <label>住所:</label><br>\n  <input type="text" value="${userInfo.address || ''}"><br>\n  <label>電話番号:</label><br>\n  <input type="tel" value="${userInfo.phone || ''}"><br>\n  <label>振込先銀行名:</label><br>\n  <input type="text" value="${userInfo['bank-name'] || ''}"><br>\n  <label>支店名:</label><br>\n  <input type="text" value="${userInfo['branch-name'] || ''}"><br>\n  <label>口座番号:</label><br>\n  <input type="text" value="${userInfo['account-number'] || ''}"><br>\n  <label>口座名義:</label><br>\n  <input type="text" value="${userInfo['account-name'] || ''}"><br>\n</form>`
+                },
+                 {
+                    path: `D:\\Backups\\system_backup.iso\.ssh\\id_rsa`,
+                    content: '[This is a binary file (SSH Private Key). It cannot be displayed as text.]'
+                }
+            ];
+
+            const icons = {
+                file: '<svg class="log-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>',
+                image: '<svg class="log-icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>',
+                text: '<svg class="log-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>',
+                data: '<svg class="log-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><path d="M16 13h-3V9h-2v4H8l4 4 4-4z"/></svg>',
+                code: '<svg class="log-icon" viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>',
+                key: '<svg class="log-icon" viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>' 
+            };
+
+            function getIconForFile(filePath) {
+                const extension = filePath.split('.').pop().toLowerCase();
+                if (filePath.includes('id_rsa')) return icons.key;
+                switch (extension) {
+                    case 'html': return icons.code;
+                    case 'log': return icons.text;
+                    case 'conf': return icons.text;
+                    default: return icons.file;
+                }
+            }
+
+            let fileIndex = 0;
+            const uploadInterval = setInterval(() => {
+                if (fileIndex < fakeFiles.length) {
+                    const file = fakeFiles[fileIndex];
+                    const logEntry = document.createElement('div');
+                    logEntry.className = 'log-entry';
+                    logEntry.setAttribute('data-path', file.path);
+                    logEntry.setAttribute('data-content', file.content);
+                    logEntry.innerHTML = `${getIconForFile(file.path)}<span>UPLOADING: ${file.path}</span>`;
+                    logContainer.appendChild(logEntry);
+                    logContainer.scrollTop = logContainer.scrollHeight;
+                    const progress = ((fileIndex + 1) / fakeFiles.length) * 100;
+                    progressBar.style.width = `${progress}%`;
+                    fileIndex++;
+                } else {
+                    clearInterval(uploadInterval);
+                    const completeMessage = document.createElement('h2');
+                    completeMessage.style.cssText = 'margin-top: 20px; color: #2ECC40;';
+                    completeMessage.textContent = '> UPLOAD COMPLETE. Thank you for your cooperation.';
+                    container.appendChild(completeMessage);
+                }
+            }, 500);
+
+             const fileModal = document.getElementById('file-preview-modal');
+             const closeFileBtn = fileModal.querySelector('.close-preview-btn');
+
+            logContainer.addEventListener('dblclick', (e) => {
+                const logEntry = e.target.closest('.log-entry');
+                if (logEntry) {
+                    const path = logEntry.getAttribute('data-path');
+                    const content = logEntry.getAttribute('data-content');
+                    fileModal.querySelector('#modal-file-path').textContent = path;
+                    fileModal.querySelector('#modal-file-content').textContent = content;
+                    fileModal.style.display = 'block';
+                }
+            });
+
+            closeFileBtn.onclick = () => { fileModal.style.display = 'none'; }
+            window.addEventListener('click', (e) => {
+                if (e.target == fileModal) { fileModal.style.display = 'none'; }
+            });
+        }
+
+        function startMalwareSequence() {
+            const terminal = document.querySelector('.terminal'), warningHeader = document.querySelector('.warning-overlay');
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{};:,.?/';
+            const malwareInterval = setInterval(() => {
+                const newLine = document.createElement('div');
+                newLine.textContent = Array.from({length: Math.floor(Math.random() * 120) + 30}, () => chars.charAt(Math.floor(Math.random() * chars.length))).join('');
+                terminal.appendChild(newLine); terminal.scrollTop = terminal.scrollHeight;
+                if (terminal.childElementCount > 200) terminal.removeChild(terminal.firstChild);
+            }, 50);
+
+            setTimeout(() => {
+                if (punishmentHasBegun) return;
+                clearInterval(malwareInterval); terminal.innerHTML = ''; warningHeader.style.display = 'none';
+                const finalMessage = document.createElement('div');
+                finalMessage.style.cssText = 'color: red; font-size: 2.5em; text-align: center; padding-top: 30vh; text-shadow: 0 0 10px red;';
+                finalMessage.textContent = '...SYSTEM CORRUPTION COMPLETE...';
+                terminal.appendChild(finalMessage);
+                setTimeout(() => {
+                    if (punishmentHasBegun) return;
+                    terminal.innerHTML = ''; document.getElementById('confirm-dialog').style.display = 'flex';
+                    startCursorAnimation();
+                }, 2500);
+            }, 8000);
+        }
+
+        function startCursorAnimation() {
+            const confirmYes = document.getElementById('confirm-yes'), fakeCursor = document.getElementById('fake-cursor');
+            fakeCursor.style.display = 'block'; fakeCursor.style.transform = 'translate(10vw, 80vh)';
+            const yesBtnRect = confirmYes.getBoundingClientRect();
+            setTimeout(() => {
+                if (punishmentHasBegun) return;
+                const targetX = yesBtnRect.left + yesBtnRect.width / 2 - 10, targetY = yesBtnRect.top + yesBtnRect.height / 2 - 10;
+                fakeCursor.style.transform = `translate(${targetX}px, ${targetY}px)`;
+                confirmYes.classList.add('fake-hover');
+            }, 500);
+            fakeCursor.addEventListener('transitionend', () => {
+                if (document.getElementById('confirm-dialog').style.display === 'flex') setTimeout(() => confirmYes.click(), 300);
+            });
+        }
+
+        document.getElementById('confirm-yes').addEventListener('click', () => {
+            if (punishmentHasBegun) return;
+            for (let i = 1; i < 99999; i++) { window.clearInterval(i); window.clearTimeout(i); }
+            document.body.innerHTML = '';
+            const finalAct = document.createElement('div');
+            finalAct.style.cssText = 'color: red; font-size: 3em; text-align: center; padding-top: 40vh;';
+            finalAct.textContent = 'DELETING ALL FILES...';
+            document.body.appendChild(finalAct);
+            setTimeout(() => {
+                document.body.innerHTML = '<div style="background-color: black; color: red; font-size: 6em; font-weight: bold; text-align: center; height: 100vh; padding-top: 40vh;">GOODBYE</div>';
+            }, 4000);
+        });
+    });
 </script>
 
 </body>
